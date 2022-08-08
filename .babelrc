@@ -1,0 +1,28 @@
+{
+  "presets": [
+    "@babel/preset-react",
+    "jest"
+  ],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": [
+          ""
+        ],
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".json",
+          ".svg",
+          ".png"
+        ],
+        "alias": {
+          "@pages/*": "./src/pages",
+          "@router/*": "./src/router",
+          "@data/*": "./src/data"
+        }
+      }
+    ]
+  ]
+}
