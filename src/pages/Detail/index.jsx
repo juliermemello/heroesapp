@@ -7,11 +7,15 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { ArrowBack } from "@mui/icons-material";
+import { useParams, useNavigate } from "react-router-dom";
 
 import data from "data/data.json";
-import { blue, lightBlue, red } from "@mui/material/colors";
+
+import Label from "./Components/Label";
+import Value from "./Components/Value";
+import Header from "./Components/Header";
+import Row from "./Components/Row";
 
 function Detail() {
   const { id } = useParams();
@@ -25,382 +29,230 @@ function Detail() {
     setPerson([...reg]);
   }, []);
 
-  const values = person.map((item, index) => (
-    <Container
-      maxWidth="md"
-      sx={{ marginTop: "15px" }}
-      key={`container${index}`}
-    >
-      <Box
-        sx={{
-          bgcolor: "#cfe8fc",
-          padding: "10px",
-          borderRadius: "5px",
-          marginBottom: "10px",
-          borderTop: `2px solid ${
-            item?.biography?.alignment === "good" ? blue[500] : red[500]
-          }`,
-        }}
-        key={`avatar${index}`}
+  const MakeItem = (item, index) => {
+    return (
+      <Container
+        maxWidth="md"
+        sx={{ marginTop: "15px" }}
+        key={`container${index}`}
       >
-        <Grid container direction="row" alignItems="center" spacing={2}>
-          <Grid item>
-            <Avatar
-              src={item?.images?.sm}
-              sx={{ height: "72px", width: "72px" }}
-            />
+        <Header alignment={item?.biography?.alignment}>
+          <Grid container direction="row" alignItems="center" spacing={2}>
+            <Grid item>
+              <Avatar
+                src={item?.images?.sm}
+                sx={{ height: "72px", width: "72px" }}
+              />
+            </Grid>
+            <Grid item>
+              <Typography variant="h3" component="div">
+                {item.name}
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Typography variant="h3" component="div">
-              {item.name}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
+        </Header>
 
-      <Box
-        sx={{
-          bgcolor: lightBlue[50],
-          padding: "10px",
-          borderRadius: "5px",
-          marginBottom: "10px",
-        }}
-        key={`biography${index}`}
-      >
-        <Typography variant="h5" fontWeight={700}>
-          Biography
-        </Typography>
+        <Row key={`biography${index}`} title="Biography">
+          <Grid container spacing={2}>
+            <Grid item md={3}>
+              <Label>Full Name</Label>
+            </Grid>
+            <Grid item md={3}>
+              <Label>Alignment</Label>
+            </Grid>
+            <Grid item md={3}>
+              <Label>Alter Egos</Label>
+            </Grid>
+            <Grid item md={3}>
+              <Label>Place Of Birth</Label>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item md={3}>
+              <Value>{item?.biography?.fullName}</Value>
+            </Grid>
+            <Grid item md={3}>
+              <Value>{item?.biography?.alignment}</Value>
+            </Grid>
+            <Grid item md={3}>
+              <Value>{item?.biography?.alterEgos}</Value>
+            </Grid>
+            <Grid item md={3}>
+              <Value>{item?.biography?.placeOfBirth}</Value>
+            </Grid>
+          </Grid>
 
-        <br />
+          <br />
 
-        <Grid container spacing={2}>
-          <Grid item md={3}>
-            <Typography variant="button" fontWeight={700}>
-              Full Name
-            </Typography>
+          <Grid container spacing={2}>
+            <Grid item md={3}>
+              <Label>First Appearance</Label>
+            </Grid>
+            <Grid item md={6}>
+              <Label>Aliases</Label>
+            </Grid>
+            <Grid item md={3}>
+              <Label>Publisher</Label>
+            </Grid>
           </Grid>
-          <Grid item md={3}>
-            <Typography variant="button" fontWeight={700}>
-              Alignment
-            </Typography>
+          <Grid container spacing={2}>
+            <Grid item md={3}>
+              <Value>{item?.biography?.firstAppearance}</Value>
+            </Grid>
+            <Grid item md={6}>
+              <Value>{item?.biography?.aliases.join(", ")}</Value>
+            </Grid>
+            <Grid item md={3}>
+              <Value>{item?.biography?.publisher}</Value>
+            </Grid>
           </Grid>
-          <Grid item md={3}>
-            <Typography variant="button" fontWeight={700}>
-              Alter Egos
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="button" fontWeight={700}>
-              Place Of Birth
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          <Grid item md={3}>
-            <Typography variant="body1">{item?.biography?.fullName}</Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="body1">
-              {item?.biography?.alignment}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="body1">
-              {item?.biography?.alterEgos}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="body1">
-              {item?.biography?.placeOfBirth}
-            </Typography>
-          </Grid>
-        </Grid>
+        </Row>
 
-        <br />
+        <Row key={`appearance${index}`} title="Appearance">
+          <Grid container spacing={2}>
+            <Grid item md={2}>
+              <Label>Eye Color</Label>
+            </Grid>
+            <Grid item md={2}>
+              <Label>Gender</Label>
+            </Grid>
+            <Grid item md={2}>
+              <Label>Hair Color</Label>
+            </Grid>
+            <Grid item md={2}>
+              <Label>Height</Label>
+            </Grid>
+            <Grid item md={2}>
+              <Label>Race</Label>
+            </Grid>
+            <Grid item md={2}>
+              <Label>Weight</Label>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item md={2}>
+              <Value>{item?.appearance?.eyeColor}</Value>
+            </Grid>
+            <Grid item md={2}>
+              <Value>{item?.appearance?.gender}</Value>
+            </Grid>
+            <Grid item md={2}>
+              <Value>{item?.appearance?.hairColor}</Value>
+            </Grid>
+            <Grid item md={2}>
+              <Value>{item?.appearance?.height[1]}</Value>
+            </Grid>
+            <Grid item md={2}>
+              <Value>{item?.appearance?.race}</Value>
+            </Grid>
+            <Grid item md={2}>
+              <Value>{item?.appearance?.weight[1]}</Value>
+            </Grid>
+          </Grid>
+        </Row>
 
-        <Grid container spacing={2}>
-          <Grid item md={3}>
-            <Typography variant="button" fontWeight={700}>
-              First Appearance
-            </Typography>
+        <Row key={`powerstats${index}`} title="Power Stats">
+          <Grid container spacing={2}>
+            <Grid item md={2}>
+              <Label>Combat</Label>
+            </Grid>
+            <Grid item md={2}>
+              <Label>Durability</Label>
+            </Grid>
+            <Grid item md={2}>
+              <Label>Intelligence</Label>
+            </Grid>
+            <Grid item md={2}>
+              <Label>Power</Label>
+            </Grid>
+            <Grid item md={2}>
+              <Label>Speed</Label>
+            </Grid>
+            <Grid item md={2}>
+              <Label>Strength</Label>
+            </Grid>
           </Grid>
-          <Grid item md={6}>
-            <Typography variant="button" fontWeight={700}>
-              Aliases
-            </Typography>
+          <Grid container spacing={2}>
+            <Grid item md={2}>
+              <Value>{item?.powerstats?.combat}</Value>
+            </Grid>
+            <Grid item md={2}>
+              <Value>{item?.powerstats?.durability}</Value>
+            </Grid>
+            <Grid item md={2}>
+              <Value>{item?.powerstats?.intelligence}</Value>
+            </Grid>
+            <Grid item md={2}>
+              <Value>{item?.powerstats?.power}</Value>
+            </Grid>
+            <Grid item md={2}>
+              <Value>{item?.powerstats?.speed}</Value>
+            </Grid>
+            <Grid item md={2}>
+              <Value>{item?.powerstats?.strength}</Value>
+            </Grid>
           </Grid>
-          <Grid item md={3}>
-            <Typography variant="button" fontWeight={700}>
-              Publisher
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          <Grid item md={3}>
-            <Typography variant="body1">
-              {item?.biography?.firstAppearance}
-            </Typography>
-          </Grid>
-          <Grid item md={6}>
-            <Typography variant="body1">
-              {item?.biography?.aliases.join(", ")}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="body1">
-              {item?.biography?.publisher}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
+        </Row>
 
-      <Box
-        sx={{
-          bgcolor: lightBlue[50],
-          padding: "10px",
-          borderRadius: "5px",
-          marginBottom: "10px",
-        }}
-        key={`appearance${index}`}
-      >
-        <Typography variant="h5" fontWeight={700}>
-          Appearance
-        </Typography>
+        <Row key={`connections${index}`} title="Connections">
+          <Grid container spacing={2}>
+            <Grid item md={6}>
+              <Label>Group Affiliation</Label>
+            </Grid>
+            <Grid item md={6}>
+              <Label>Relatives</Label>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item md={6}>
+              <Value>{item?.connections?.groupAffiliation}</Value>
+            </Grid>
+            <Grid item md={6}>
+              <Value>{item?.connections?.relatives}</Value>
+            </Grid>
+          </Grid>
+        </Row>
 
-        <br />
+        <Row key={`work${index}`} title="Work">
+          <Grid container spacing={2}>
+            <Grid item md={6}>
+              <Label>Base</Label>
+            </Grid>
+            <Grid item md={6}>
+              <Label>Occupation</Label>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item md={6}>
+              <Value>{item?.work?.base}</Value>
+            </Grid>
+            <Grid item md={6}>
+              <Value>{item?.work?.occupation}</Value>
+            </Grid>
+          </Grid>
+        </Row>
 
-        <Grid container spacing={2}>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Eye Color
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Gender
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Hair Color
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Height
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Race
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Weight
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          <Grid item md={2}>
-            <Typography variant="body1">
-              {item?.appearance?.eyeColor}
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="body1">{item?.appearance?.gender}</Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="body1">
-              {item?.appearance?.hairColor}
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="body1">
-              {item?.appearance?.height[1]}
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="body1">{item?.appearance?.race}</Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="body1">
-              {item?.appearance?.weight[1]}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
-
-      <Box
-        sx={{
-          bgcolor: lightBlue[50],
-          padding: "10px",
-          borderRadius: "5px",
-          marginBottom: "10px",
-        }}
-        key={`powerstats${index}`}
-      >
-        <Typography variant="h5" fontWeight={700}>
-          Power Stats
-        </Typography>
-
-        <br />
-
-        <Grid container spacing={2}>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Combat
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Durability
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Intelligence
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Power
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Speed
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="button" fontWeight={700}>
-              Strength
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          <Grid item md={2}>
-            <Typography variant="body1">{item?.powerstats?.combat}</Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="body1">
-              {item?.powerstats?.durability}
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="body1">
-              {item?.powerstats?.intelligence}
-            </Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="body1">{item?.powerstats?.power}</Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="body1">{item?.powerstats?.speed}</Typography>
-          </Grid>
-          <Grid item md={2}>
-            <Typography variant="body1">
-              {item?.powerstats?.strength}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
-
-      <Box
-        sx={{
-          bgcolor: lightBlue[50],
-          padding: "10px",
-          borderRadius: "5px",
-          marginBottom: "10px",
-        }}
-        key={`connections${index}`}
-      >
-        <Typography variant="h5" fontWeight={700}>
-          Connections
-        </Typography>
-
-        <br />
-
-        <Grid container spacing={2}>
-          <Grid item md={6}>
-            <Typography variant="button" fontWeight={700}>
-              Group Affiliation
-            </Typography>
-          </Grid>
-          <Grid item md={6}>
-            <Typography variant="button" fontWeight={700}>
-              Relatives
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          <Grid item md={6}>
-            <Typography variant="body1">
-              {item?.connections?.groupAffiliation}
-            </Typography>
-          </Grid>
-          <Grid item md={6}>
-            <Typography variant="body1">
-              {item?.connections?.relatives}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
-
-      <Box
-        sx={{
-          bgcolor: lightBlue[50],
-          padding: "10px",
-          borderRadius: "5px",
-          marginBottom: "10px",
-        }}
-        key={`work${index}`}
-      >
-        <Typography variant="h5" fontWeight={700}>
-          Work
-        </Typography>
-
-        <br />
-
-        <Grid container spacing={2}>
-          <Grid item md={6}>
-            <Typography variant="button" fontWeight={700}>
-              Base
-            </Typography>
-          </Grid>
-          <Grid item md={6}>
-            <Typography variant="button" fontWeight={700}>
-              Occupation
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          <Grid item md={6}>
-            <Typography variant="body1">{item?.work?.base}</Typography>
-          </Grid>
-          <Grid item md={6}>
-            <Typography variant="body1">{item?.work?.occupation}</Typography>
-          </Grid>
-        </Grid>
-      </Box>
-
-      <Box
-        sx={{
-          padding: "10px",
-          marginBottom: "10px",
-        }}
-        key={`navi${index}`}
-      >
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => navigate("/")}
+        <Box
+          sx={{
+            padding: "10px",
+            marginBottom: "10px",
+          }}
+          key={`navi${index}`}
         >
-          Back
-        </Button>
-      </Box>
-    </Container>
-  ));
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<ArrowBack />}
+            onClick={() => navigate("/")}
+          >
+            Back
+          </Button>
+        </Box>
+      </Container>
+    );
+  };
+
+  const values = person.map((item, index) => MakeItem(item, index));
 
   return <>{values}</>;
 }
