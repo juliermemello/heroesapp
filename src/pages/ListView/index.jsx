@@ -1,23 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
+  FormControlLabel,
+  FormGroup,
   Grid,
+  Switch,
   TablePagination,
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-import data from "data/data.json";
+import Display from "./Components/Display";
+import { useLocalStorage } from "hooks/useLocalStorage";
+import { useFilter } from "hooks/useFilter";
+import { GetData } from "services/Data";
 
 function ListView() {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useLocalStorage("page", 0);
+  const [rowsPerPage, setRowsPerPage] = useLocalStorage("rowsPerPage", 25);
+  const [heroes, setHeroes] = useLocalStorage("heroes", true);
+  const [villains, setVillains] = useLocalStorage("villains", true);
+  const [others, setOthers] = useLocalStorage("others", true);
 
   const navigate = useNavigate();
+  const filter = useFilter();
+
+  useEffect(() => {
+    setPage(0);
+  }, [heroes, villains, others]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -28,54 +37,86 @@ function ListView() {
     setPage(0);
   };
 
-  const handleReadMore = (event, id) => {
+  const handleReadMore = (id) => {
     navigate(`/detail/${id}`);
   };
 
+  const displayItems = GetData(
+    page,
+    rowsPerPage,
+    filter.filterValue,
+    heroes,
+    villains,
+    others
+  );
+
   return (
     <>
-      <Typography variant="h3" marginBottom={"15px"}>
-        List of Heroes
-      </Typography>
-
-      <Grid container spacing={2}>
-        {data
-          .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-          .map((item, index) => (
-            <Grid item xs={6} sm={4} md={3} lg={2} key={item.id}>
-              <Card elevation={1}>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={item.images.md}
-                  alt={item.name}
-                />
-                <CardContent>
-                  <Typography variant="h6" component="div">
-                    {item.name}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button
-                    size="small"
-                    onClick={(e) => handleReadMore(e, item.id)}
-                  >
-                    Read More
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
+      <Grid container marginTop="5px">
+        <Grid item md={2}></Grid>
+        <Grid item md={10}>
+          <Typography variant="h3" marginBottom={"15px"}>
+            List of Heroes
+          </Typography>
+        </Grid>
       </Grid>
 
-      <TablePagination
-        component="div"
-        count={data.length}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      <Grid container marginBottom="40px">
+        <Grid item md={2}>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={!!heroes}
+                  onChange={(e) => setHeroes(e.target.checked)}
+                />
+              }
+              label="Heroes"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={!!villains}
+                  onChange={(e) => setVillains(e.target.checked)}
+                />
+              }
+              label="Villains"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={!!others}
+                  onChange={(e) => setOthers(e.target.checked)}
+                />
+              }
+              label="Others"
+            />
+          </FormGroup>
+        </Grid>
+        <Grid item md={10}>
+          <Grid container spacing={2}>
+            {displayItems.list.map((item) => (
+              <Display
+                key={item?.id}
+                name={item?.name}
+                image={item?.images?.md}
+                onReadMore={() => handleReadMore(item?.id)}
+              />
+            ))}
+          </Grid>
+
+          {!filter.filterValue && (
+            <TablePagination
+              component="div"
+              count={displayItems.total}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          )}
+        </Grid>
+      </Grid>
     </>
   );
 }
