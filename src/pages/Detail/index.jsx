@@ -3,13 +3,12 @@ import { Box, Button, Container } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
 
-import data from "data/data.json";
-
 import Header from "./Components/Header";
 import Row from "./Components/Row";
 import RowGroup from "./Components/RowGroup";
 import RowLabel from "./Components/RowLabel";
 import RowValue from "./Components/RowValue";
+import { GetDataId } from "services/Data";
 
 function Detail() {
   const { id } = useParams();
@@ -18,7 +17,7 @@ function Detail() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const reg = data.filter((x) => parseInt(x.id) === parseInt(id));
+    const reg = GetDataId(id);
 
     setPerson([...reg]);
   }, []);

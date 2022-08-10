@@ -37,3 +37,7 @@ export const GetData = (
 
   return { list, total };
 };
+
+export const GetDataId = (id) => {
+  return data.filter((x) => parseInt(x.id) === parseInt(id));
+};
