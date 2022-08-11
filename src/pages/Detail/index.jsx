@@ -132,7 +132,6 @@ function Detail() {
         >
           <Button
             variant="back"
-            // color="secondary"
             startIcon={<ArrowBack />}
             onClick={() => navigate("/")}
           >
