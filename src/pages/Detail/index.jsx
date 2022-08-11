@@ -131,8 +131,8 @@ function Detail() {
           key={`navi${index}`}
         >
           <Button
-            variant="contained"
-            color="secondary"
+            variant="back"
+            // color="secondary"
             startIcon={<ArrowBack />}
             onClick={() => navigate("/")}
           >

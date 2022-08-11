@@ -5,7 +5,7 @@ import { lightBlue } from "@mui/material/colors";
 import Title from "../Title";
 
 const RowStyled = styled(Box)(({ theme }) => ({
-  backgroundColor: lightBlue[50],
+  backgroundColor: theme.palette.secondary.light,
   padding: "10px",
   borderRadius: "5px",
   marginBottom: "10px",

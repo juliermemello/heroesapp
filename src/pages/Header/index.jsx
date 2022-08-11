@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AppBar, Toolbar, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { useFilter } from "hooks/useFilter";
@@ -8,6 +9,10 @@ import {
   SearchIconWrapper,
   StyledInputBase,
 } from "./Components/Search";
+
+const AppBarStyled = styled(AppBar)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.dark,
+}));
 
 function Header() {
   const [filterValue, setFilterValue] = useState("");
@@ -21,7 +26,7 @@ function Header() {
   }, [filterValue]);
 
   return (
-    <AppBar position="sticky" elevation={0}>
+    <AppBarStyled position="sticky" elevation={0}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Heroes App
@@ -37,7 +42,7 @@ function Header() {
           />
         </Search>
       </Toolbar>
-    </AppBar>
+    </AppBarStyled>
   );
 }
 
