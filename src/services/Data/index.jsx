@@ -1,6 +1,6 @@
-import data from "data/data.json";
+import { api } from "services/api";
 
-export const GetData = (
+export const GetData = async (
   page,
   rowsPerPage,
   filter,
@@ -8,36 +8,35 @@ export const GetData = (
   villains,
   others
 ) => {
-  let list = data;
+  const data = await api.get("/all.json");
+
+  let list = data.data;
   let total = 0;
 
-  if (heroes === false) {
+  if (heroes === false)
     list = list.filter((x) => x.biography.alignment !== "good");
-  }
 
-  if (villains === false) {
+  if (villains === false)
     list = list.filter((x) => x.biography.alignment !== "bad");
-  }
 
-  if (others === false) {
+  if (others === false)
     list = list.filter(
       (x) => x.biography.alignment === "good" || x.biography.alignment === "bad"
     );
-  }
 
   total = list.length;
 
-  if (filter) {
+  if (filter)
     list = list.filter((x) =>
       x.name.toLowerCase().includes(filter.toLowerCase())
     );
-  } else {
-    list = list.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
-  }
+  else list = list.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
   return { list, total };
 };
 
-export const GetDataId = (id) => {
-  return data.filter((x) => parseInt(x.id) === parseInt(id));
+export const GetDataId = async (id) => {
+  const data = await api.get(`/id/${id}.json`);
+
+  return data.data;
 };

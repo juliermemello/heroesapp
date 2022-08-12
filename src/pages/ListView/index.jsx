@@ -8,8 +8,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 import Display from "./Components/Display";
+import DisplaySkeleton from "./Components/DisplaySkeleton";
 import { useLocalStorage } from "hooks/useLocalStorage";
 import { useFilter } from "hooks/useFilter";
 import { GetData } from "services/Data";
@@ -24,9 +26,28 @@ function ListView() {
   const navigate = useNavigate();
   const filter = useFilter();
 
+  const { data, isLoading, error, isFetching, refetch } = useQuery(
+    ["data"],
+    async () => {
+      return await GetData(
+        page,
+        rowsPerPage,
+        filter.filterValue,
+        heroes,
+        villains,
+        others
+      );
+    }
+  );
+
   useEffect(() => {
     setPage(0);
-  }, [heroes, villains, others]);
+    refetch();
+  }, [heroes, villains, others, filter.filterValue]);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -40,15 +61,6 @@ function ListView() {
   const handleReadMore = (id) => {
     navigate(`/detail/${id}`);
   };
-
-  const displayItems = GetData(
-    page,
-    rowsPerPage,
-    filter.filterValue,
-    heroes,
-    villains,
-    others
-  );
 
   return (
     <>
@@ -94,21 +106,24 @@ function ListView() {
           </FormGroup>
         </Grid>
         <Grid item md={10}>
+          {isLoading && <DisplaySkeleton />}
+
           <Grid container spacing={2}>
-            {displayItems.list.map((item) => (
-              <Display
-                key={item?.id}
-                name={item?.name}
-                image={item?.images?.md}
-                onReadMore={() => handleReadMore(item?.id)}
-              />
-            ))}
+            {!isLoading &&
+              data?.list?.map((item) => (
+                <Display
+                  key={item?.id}
+                  name={item?.name}
+                  image={item?.images?.md}
+                  onReadMore={() => handleReadMore(item?.id)}
+                />
+              ))}
           </Grid>
 
-          {!filter.filterValue && (
+          {!filter.filterValue && !isLoading && (
             <TablePagination
               component="div"
-              count={displayItems.total}
+              count={data?.total}
               page={page}
               onPageChange={handleChangePage}
               rowsPerPage={rowsPerPage}

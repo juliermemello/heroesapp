@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Container } from "@mui/material";
+import React from "react";
+import { Alert, Box, Button, Container } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 import Header from "./Components/Header";
 import Row from "./Components/Row";
@@ -12,139 +13,145 @@ import { GetDataId } from "services/Data";
 
 function Detail() {
   const { id } = useParams();
-  const [person, setPerson] = useState([]);
+  const index = id;
+
+  const { data, isLoading, error, isFetching, refetch } = useQuery(
+    ["data"],
+    async () => {
+      return await GetDataId(id);
+    }
+  );
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const reg = GetDataId(id);
+  return (
+    <>
+      {(isLoading || isFetching) && (
+        <Container maxWidth="md" sx={{ marginTop: "15px" }}>
+          <Alert icon={false} severity="warning">
+            Loading ...
+          </Alert>
+        </Container>
+      )}
+      {!isLoading && !isFetching && (
+        <Container maxWidth="md" sx={{ marginTop: "15px" }}>
+          <Header
+            alignment={data?.biography?.alignment}
+            avatar={data?.images?.sm}
+            name={data?.name}
+          />
 
-    setPerson([...reg]);
-  }, []);
+          <Row key={`biography${index}`} title="Biography">
+            <RowGroup>
+              <RowLabel size={3}>Full Name</RowLabel>
+              <RowLabel size={3}>Alignment</RowLabel>
+              <RowLabel size={3}>Alter Egos</RowLabel>
+              <RowLabel size={3}>Place Of Birth</RowLabel>
+            </RowGroup>
+            <RowGroup>
+              <RowValue size={3}>{data?.biography?.fullName}</RowValue>
+              <RowValue size={3}>{data?.biography?.alignment}</RowValue>
+              <RowValue size={3}>{data?.biography?.alterEgos}</RowValue>
+              <RowValue size={3}>{data?.biography?.placeOfBirth}</RowValue>
+            </RowGroup>
 
-  const MakeItem = (item, index) => {
-    return (
-      <Container
-        maxWidth="md"
-        sx={{ marginTop: "15px" }}
-        key={`container${index}`}
-      >
-        <Header
-          alignment={item?.biography?.alignment}
-          avatar={item?.images?.sm}
-          name={item?.name}
-        />
+            <br />
 
-        <Row key={`biography${index}`} title="Biography">
-          <RowGroup>
-            <RowLabel size={3}>Full Name</RowLabel>
-            <RowLabel size={3}>Alignment</RowLabel>
-            <RowLabel size={3}>Alter Egos</RowLabel>
-            <RowLabel size={3}>Place Of Birth</RowLabel>
-          </RowGroup>
-          <RowGroup>
-            <RowValue size={3}>{item?.biography?.fullName}</RowValue>
-            <RowValue size={3}>{item?.biography?.alignment}</RowValue>
-            <RowValue size={3}>{item?.biography?.alterEgos}</RowValue>
-            <RowValue size={3}>{item?.biography?.placeOfBirth}</RowValue>
-          </RowGroup>
+            <RowGroup>
+              <RowLabel size={3}>First Appearance</RowLabel>
+              <RowLabel size={6}>Aliases</RowLabel>
+              <RowLabel size={3}>Publisher</RowLabel>
+            </RowGroup>
+            <RowGroup>
+              <RowValue size={3}>{data?.biography?.firstAppearance}</RowValue>
+              <RowValue size={6}>
+                {data?.biography?.aliases.join(", ")}
+              </RowValue>
+              <RowValue size={3}>{data?.biography?.publisher}</RowValue>
+            </RowGroup>
+          </Row>
 
-          <br />
+          <Row key={`appearance${index}`} title="Appearance">
+            <RowGroup>
+              <RowLabel size={2}>Eye Color</RowLabel>
+              <RowLabel size={2}>Gender</RowLabel>
+              <RowLabel size={2}>Hair Color</RowLabel>
+              <RowLabel size={2}>Height</RowLabel>
+              <RowLabel size={2}>Race</RowLabel>
+              <RowLabel size={2}>Weight</RowLabel>
+            </RowGroup>
+            <RowGroup>
+              <RowValue size={2}>{data?.appearance?.eyeColor}</RowValue>
+              <RowValue size={2}>{data?.appearance?.gender}</RowValue>
+              <RowValue size={2}>{data?.appearance?.hairColor}</RowValue>
+              <RowValue size={2}>{data?.appearance?.height[1]}</RowValue>
+              <RowValue size={2}>{data?.appearance?.race}</RowValue>
+              <RowValue size={2}>{data?.appearance?.weight[1]}</RowValue>
+            </RowGroup>
+          </Row>
 
-          <RowGroup>
-            <RowLabel size={3}>First Appearance</RowLabel>
-            <RowLabel size={6}>Aliases</RowLabel>
-            <RowLabel size={3}>Publisher</RowLabel>
-          </RowGroup>
-          <RowGroup>
-            <RowValue size={3}>{item?.biography?.firstAppearance}</RowValue>
-            <RowValue size={6}>{item?.biography?.aliases.join(", ")}</RowValue>
-            <RowValue size={3}>{item?.biography?.publisher}</RowValue>
-          </RowGroup>
-        </Row>
+          <Row key={`powerstats${index}`} title="Power Stats">
+            <RowGroup>
+              <RowLabel size={2}>Combat</RowLabel>
+              <RowLabel size={2}>Durability</RowLabel>
+              <RowLabel size={2}>Intelligence</RowLabel>
+              <RowLabel size={2}>Power</RowLabel>
+              <RowLabel size={2}>Speed</RowLabel>
+              <RowLabel size={2}>Strength</RowLabel>
+            </RowGroup>
+            <RowGroup>
+              <RowValue size={2}>{data?.powerstats?.combat}</RowValue>
+              <RowValue size={2}>{data?.powerstats?.durability}</RowValue>
+              <RowValue size={2}>{data?.powerstats?.intelligence}</RowValue>
+              <RowValue size={2}>{data?.powerstats?.power}</RowValue>
+              <RowValue size={2}>{data?.powerstats?.speed}</RowValue>
+              <RowValue size={2}>{data?.powerstats?.strength}</RowValue>
+            </RowGroup>
+          </Row>
 
-        <Row key={`appearance${index}`} title="Appearance">
-          <RowGroup>
-            <RowLabel size={2}>Eye Color</RowLabel>
-            <RowLabel size={2}>Gender</RowLabel>
-            <RowLabel size={2}>Hair Color</RowLabel>
-            <RowLabel size={2}>Height</RowLabel>
-            <RowLabel size={2}>Race</RowLabel>
-            <RowLabel size={2}>Weight</RowLabel>
-          </RowGroup>
-          <RowGroup>
-            <RowValue size={2}>{item?.appearance?.eyeColor}</RowValue>
-            <RowValue size={2}>{item?.appearance?.gender}</RowValue>
-            <RowValue size={2}>{item?.appearance?.hairColor}</RowValue>
-            <RowValue size={2}>{item?.appearance?.height[1]}</RowValue>
-            <RowValue size={2}>{item?.appearance?.race}</RowValue>
-            <RowValue size={2}>{item?.appearance?.weight[1]}</RowValue>
-          </RowGroup>
-        </Row>
+          <Row key={`connections${index}`} title="Connections">
+            <RowGroup>
+              <RowLabel size={6}>Group Affiliation</RowLabel>
+              <RowLabel size={6}>Relatives</RowLabel>
+            </RowGroup>
+            <RowGroup>
+              <RowValue size={6}>
+                {data?.connections?.groupAffiliation}
+              </RowValue>
+              <RowValue size={6}>{data?.connections?.relatives}</RowValue>
+            </RowGroup>
+          </Row>
 
-        <Row key={`powerstats${index}`} title="Power Stats">
-          <RowGroup>
-            <RowLabel size={2}>Combat</RowLabel>
-            <RowLabel size={2}>Durability</RowLabel>
-            <RowLabel size={2}>Intelligence</RowLabel>
-            <RowLabel size={2}>Power</RowLabel>
-            <RowLabel size={2}>Speed</RowLabel>
-            <RowLabel size={2}>Strength</RowLabel>
-          </RowGroup>
-          <RowGroup>
-            <RowValue size={2}>{item?.powerstats?.combat}</RowValue>
-            <RowValue size={2}>{item?.powerstats?.durability}</RowValue>
-            <RowValue size={2}>{item?.powerstats?.intelligence}</RowValue>
-            <RowValue size={2}>{item?.powerstats?.power}</RowValue>
-            <RowValue size={2}>{item?.powerstats?.speed}</RowValue>
-            <RowValue size={2}>{item?.powerstats?.strength}</RowValue>
-          </RowGroup>
-        </Row>
+          <Row key={`work${index}`} title="Work">
+            <RowGroup>
+              <RowLabel size={6}>Base</RowLabel>
+              <RowLabel size={6}>Occupation</RowLabel>
+            </RowGroup>
+            <RowGroup>
+              <RowValue size={6}>{data?.work?.base}</RowValue>
+              <RowValue size={6}>{data?.work?.occupation}</RowValue>
+            </RowGroup>
+          </Row>
 
-        <Row key={`connections${index}`} title="Connections">
-          <RowGroup>
-            <RowLabel size={6}>Group Affiliation</RowLabel>
-            <RowLabel size={6}>Relatives</RowLabel>
-          </RowGroup>
-          <RowGroup>
-            <RowValue size={6}>{item?.connections?.groupAffiliation}</RowValue>
-            <RowValue size={6}>{item?.connections?.relatives}</RowValue>
-          </RowGroup>
-        </Row>
-
-        <Row key={`work${index}`} title="Work">
-          <RowGroup>
-            <RowLabel size={6}>Base</RowLabel>
-            <RowLabel size={6}>Occupation</RowLabel>
-          </RowGroup>
-          <RowGroup>
-            <RowValue size={6}>{item?.work?.base}</RowValue>
-            <RowValue size={6}>{item?.work?.occupation}</RowValue>
-          </RowGroup>
-        </Row>
-
-        <Box
-          sx={{
-            padding: "10px",
-            marginBottom: "10px",
-          }}
-          key={`navi${index}`}
-        >
-          <Button
-            variant="back"
-            startIcon={<ArrowBack />}
-            onClick={() => navigate("/")}
+          <Box
+            sx={{
+              padding: "10px",
+              marginBottom: "10px",
+            }}
+            key={`navi${index}`}
           >
-            Back
-          </Button>
-        </Box>
-      </Container>
-    );
-  };
-
-  const values = person.map((item, index) => MakeItem(item, index));
-
-  return <>{values}</>;
+            <Button
+              variant="back"
+              startIcon={<ArrowBack />}
+              onClick={() => navigate("/")}
+            >
+              Back
+            </Button>
+          </Box>
+        </Container>
+      )}
+    </>
+  );
 }
 
 export default Detail;

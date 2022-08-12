@@ -1,22 +1,20 @@
 import React from "react";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { blue, red } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
-const HeaderStyled = styled(Box)(({ theme, alignment }) => ({
+const HeaderStyled = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   padding: "10px",
   borderRadius: "5px",
   marginBottom: "10px",
-  // borderTop: `3px solid ${alignment === "good" ? blue[500] : red[500]}`,
 }));
 
 function Header(props) {
   let theme = createTheme();
 
   return (
-    <HeaderStyled alignment={props.alignment}>
+    <HeaderStyled>
       <Grid container direction="row" alignItems="center" spacing={2}>
         <Grid item>
           <Avatar src={props.avatar} sx={{ height: "72px", width: "72px" }} />
