@@ -106,10 +106,11 @@ function ListView() {
           </FormGroup>
         </Grid>
         <Grid item md={10}>
-          {isLoading && <DisplaySkeleton />}
+          {(isLoading || isFetching) && <DisplaySkeleton />}
 
           <Grid container spacing={2}>
             {!isLoading &&
+              !isFetching &&
               data?.list?.map((item) => (
                 <Display
                   key={item?.id}
@@ -120,7 +121,7 @@ function ListView() {
               ))}
           </Grid>
 
-          {!filter.filterValue && !isLoading && (
+          {!filter.filterValue && !isLoading && !isFetching && (
             <TablePagination
               component="div"
               count={data?.total}
