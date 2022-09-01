@@ -29,7 +29,7 @@ function Header() {
     <AppBarStyled position="sticky" elevation={0}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Heroes App
+          Heroes App - Marvel
         </Typography>
         <Search>
           <SearchIconWrapper>

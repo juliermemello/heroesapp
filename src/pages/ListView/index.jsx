@@ -1,12 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  FormControlLabel,
-  FormGroup,
-  Grid,
-  Switch,
-  TablePagination,
-  Typography,
-} from "@mui/material";
+import { Grid, TablePagination, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
@@ -14,14 +7,11 @@ import Display from "./Components/Display";
 import DisplaySkeleton from "./Components/DisplaySkeleton";
 import { useLocalStorage } from "hooks/useLocalStorage";
 import { useFilter } from "hooks/useFilter";
-import { GetData } from "services/Data";
+import { GetCharacters } from "services/Data";
 
 function ListView() {
   const [page, setPage] = useLocalStorage("page", 0);
   const [rowsPerPage, setRowsPerPage] = useLocalStorage("rowsPerPage", 25);
-  const [heroes, setHeroes] = useLocalStorage("heroes", true);
-  const [villains, setVillains] = useLocalStorage("villains", true);
-  const [others, setOthers] = useLocalStorage("others", true);
 
   const navigate = useNavigate();
   const filter = useFilter();
@@ -29,21 +19,14 @@ function ListView() {
   const { data, isLoading, error, isFetching, refetch } = useQuery(
     ["data"],
     async () => {
-      return await GetData(
-        page,
-        rowsPerPage,
-        filter.filterValue,
-        heroes,
-        villains,
-        others
-      );
+      return await GetCharacters(page, rowsPerPage, filter.filterValue);
     }
   );
 
   useEffect(() => {
     setPage(0);
     refetch();
-  }, [heroes, villains, others, filter.filterValue]);
+  }, [filter.filterValue]);
 
   useEffect(() => {
     refetch();
@@ -65,8 +48,7 @@ function ListView() {
   return (
     <>
       <Grid container marginTop="5px">
-        <Grid item md={2}></Grid>
-        <Grid item md={10}>
+        <Grid item md={12}>
           <Typography variant="h3" marginBottom={"15px"}>
             List of Heroes
           </Typography>
@@ -74,48 +56,17 @@ function ListView() {
       </Grid>
 
       <Grid container marginBottom="40px">
-        <Grid item md={2}>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={!!heroes}
-                  onChange={(e) => setHeroes(e.target.checked)}
-                />
-              }
-              label="Heroes"
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={!!villains}
-                  onChange={(e) => setVillains(e.target.checked)}
-                />
-              }
-              label="Villains"
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={!!others}
-                  onChange={(e) => setOthers(e.target.checked)}
-                />
-              }
-              label="Others"
-            />
-          </FormGroup>
-        </Grid>
-        <Grid item md={10}>
+        <Grid item md={12}>
           {(isLoading || isFetching) && <DisplaySkeleton />}
 
           <Grid container spacing={2}>
             {!isLoading &&
               !isFetching &&
-              data?.list?.map((item) => (
+              data?.results?.map((item) => (
                 <Display
                   key={item?.id}
                   name={item?.name}
-                  image={item?.images?.md}
+                  image={`${item?.thumbnail?.path}.${item?.thumbnail?.extension}`}
                   onReadMore={() => handleReadMore(item?.id)}
                 />
               ))}

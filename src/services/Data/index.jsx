@@ -1,42 +1,22 @@
 import { api } from "services/api";
 
-export const GetData = async (
-  page,
-  rowsPerPage,
-  filter,
-  heroes,
-  villains,
-  others
-) => {
-  const data = await api.get("/all.json");
+export const GetCharacters = async (page, rowsPerPage, filter) => {
+  let endpoint = `characters?orderBy=name&limit=${rowsPerPage}&offset=${
+    rowsPerPage * page
+  }`;
 
-  let list = data.data;
-  let total = 0;
+  if (filter) endpoint += `&nameStartsWith=${filter}`;
 
-  if (heroes === false)
-    list = list.filter((x) => x.biography.alignment !== "good");
+  const data = await api.get(endpoint);
 
-  if (villains === false)
-    list = list.filter((x) => x.biography.alignment !== "bad");
+  const results = data.data.data.results;
+  const total = data.data.data.total;
 
-  if (others === false)
-    list = list.filter(
-      (x) => x.biography.alignment === "good" || x.biography.alignment === "bad"
-    );
-
-  total = list.length;
-
-  if (filter)
-    list = list.filter((x) =>
-      x.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  else list = list.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
-
-  return { list, total };
+  return { results, total };
 };
 
-export const GetDataId = async (id) => {
-  const data = await api.get(`/id/${id}.json`);
+export const GetCharacter = async (id) => {
+  const data = await api.get(`characters/${id}`);
 
-  return data.data;
+  return data.data.data.results[0];
 };

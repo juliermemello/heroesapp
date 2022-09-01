@@ -1,7 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { lightBlue } from "@mui/material/colors";
 import Title from "../Title";
 
 const RowStyled = styled(Box)(({ theme }) => ({
